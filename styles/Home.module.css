@@ -1,5 +1,12 @@
 .container {
   padding: 0 2rem;
+  margin-top: 5rem;
+  margin-left: 40rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: fit-content;
 }
 
 .main {
