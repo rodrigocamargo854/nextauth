@@ -1,5 +1,7 @@
 
 import Router from "next/router"
+import { useContext } from "react"
+import { AuthContext } from "../contexts/AuthContexts"
 
 function handleBackHome(){
     return Router.push('/')
@@ -7,10 +9,12 @@ function handleBackHome(){
 
 export default function Dashboards(){
 
+    const {user} = useContext(AuthContext)
+
 
     return (
         <>
-        <h1>Dashboards</h1>
+        <h1>Hello mr{user?.email}</h1>
         <button onClick={handleBackHome}> home</button>
         </>
     )
