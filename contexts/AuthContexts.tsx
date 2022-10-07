@@ -1,5 +1,12 @@
-import { createContext, ReactNode } from "react";
+import { createContext, ReactNode, useState } from "react";
 import { api } from "../services/api";
+import Router from "next/router";
+
+type User={
+ email:string
+ permissions:string[]
+ roles:string[]
+}
 
 type SignIncredentials = {
   email: string;
@@ -18,6 +25,8 @@ type Props = {
 export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: Props) {
+const [use,setUser] = useState<User>()
+
   const isAuthenticated = false;
 
   async function signIn({ email, password }: SignIncredentials) {
@@ -26,6 +35,16 @@ export function AuthProvider({ children }: Props) {
         email,
         password,
       });
+
+      const{permissions,roles} = response.data
+
+      setUser({
+        email,
+        permissions,
+        roles
+      })
+
+      Router.push('/Dashboards')
 
       console.log(response.data);
     } catch (err) {
