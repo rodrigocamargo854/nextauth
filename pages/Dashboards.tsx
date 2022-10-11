@@ -2,6 +2,7 @@ import Router from "next/router";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContexts";
 import { api } from "../services/api";
+import { withSSRauth } from "../utils/withSSRauth";
 
 function handleBackHome() {
   return Router.push("/");
@@ -26,3 +27,9 @@ export default function Dashboards() {
     </>
   );
 }
+
+export const getServerSideProps = withSSRauth<{}>(async (ctx) => {
+  return {
+    props: {},
+  };
+});
