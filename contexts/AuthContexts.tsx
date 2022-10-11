@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { api } from "../services/api";
 import Router from "next/router";
-import { setCookie, parseCookies } from "nookies";
+import { setCookie, parseCookies, destroyCookie } from "nookies";
 
 type User = {
   email: string;
@@ -23,6 +23,12 @@ type Props = {
   children: ReactNode;
 };
 
+export function signOut() {
+  destroyCookie(undefined, "nextauth.token");
+  destroyCookie(undefined, "nextauth.refreshToken");
+
+  Router.push("/");
+}
 //creating context
 export const AuthContext = createContext({} as AuthContextData);
 
@@ -34,15 +40,20 @@ export function AuthProvider({ children }: Props) {
   useEffect(() => {
     const { "nextauth.token": token } = parseCookies(); // bring all saves cookies
     if (token) {
-      api.get("/me").then((response) => {
-        const { email, pemissions, roles } = response.data;
+      api
+        .get("/me")
+        .then((response) => {
+          const { email, pemissions, roles } = response.data;
 
-        setUser({
-          email,
-          pemissions,
-          roles,
+          setUser({
+            email,
+            pemissions,
+            roles,
+          });
+        })
+        .catch((error) => {
+          signOut()
         });
-      });
     }
   }, []);
 
@@ -71,7 +82,7 @@ export function AuthProvider({ children }: Props) {
         roles,
       });
 
-      //before redirect to dashboard , doing the authorization 
+      //before redirect to dashboard , doing the authorization
       api.defaults.headers["Authorization"] = `Bearer ${token}`;
 
       Router.push("/Dashboards");
