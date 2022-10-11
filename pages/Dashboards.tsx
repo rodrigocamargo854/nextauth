@@ -9,11 +9,14 @@ function handleBackHome() {
 
 export default function Dashboards() {
   useEffect(() => {
-    api.get("/me").then((response) => {
-      console.log(response);
-    });
+    api
+      .get("/me")
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => console.log(err));
   }, []);
-  
+
   const { user } = useContext(AuthContext);
 
   return (
