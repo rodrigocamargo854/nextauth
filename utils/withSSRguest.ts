@@ -14,13 +14,13 @@ export function withSSRguest<P extends { [key: string]: unknown }>(
     const cookies = parseCookies(ctx);
     console.log(ctx.req.cookies);
 
-    if (cookies["nextauth.token"]) {
+    if (cookies['nextauth.token']) {
       return {
         redirect: {
-          destination: "/dashboard",
+          destination: '/dashboard',
           permanent: false,
-        },
-      };
+        }
+      }
     }
     return await fn(ctx);
   };

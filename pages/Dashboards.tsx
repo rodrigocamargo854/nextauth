@@ -1,7 +1,10 @@
 import Router from "next/router";
+import { destroyCookie } from "nookies";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContexts";
-import { api } from "../services/api";
+import { setupAPIClient } from "../services/api";
+import { api } from "../services/apiClient";
+import { AuthTokenError } from "../services/errors/AuthTokenError";
 import { withSSRauth } from "../utils/withSSRauth";
 
 function handleBackHome() {
@@ -29,6 +32,12 @@ export default function Dashboards() {
 }
 
 export const getServerSideProps = withSSRauth<{}>(async (ctx) => {
+  const apiClient = setupAPIClient(ctx);
+
+  const response = await apiClient.get("/me");
+
+  console.log(response);
+
   return {
     props: {},
   };
