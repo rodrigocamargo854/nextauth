@@ -1,39 +1,37 @@
-import Router from "next/router";
-import { destroyCookie } from "nookies";
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../contexts/AuthContexts";
 import { setupAPIClient } from "../services/api";
 import { api } from "../services/apiClient";
-import { AuthTokenError } from "../services/errors/AuthTokenError";
 import { withSSRauth } from "../utils/withSSRauth";
+import { AuthContext } from "../contexts/AuthContexts";
+import { useCan } from "../hooks/useCan";
+import Can from "../components/Can";
 
-function handleBackHome() {
-  return Router.push("/");
-}
+export default function Dashboard() {
+  const { user } = useContext(AuthContext);
 
-export default function Dashboards() {
+  const userCanSeeMetrics = useCan({
+    permissions: ["metrics.list"],
+  });
+
   useEffect(() => {
     api
       .get("/me")
-      .then((response) => {
-        console.log(response);
-      })
+      .then((response) => console.log(response))
       .catch((err) => console.log(err));
   }, []);
 
-  const { user } = useContext(AuthContext);
-
   return (
     <>
-      <h1>Hello mr {user?.email}</h1>
-      <button onClick={handleBackHome}> home</button>
+      <h1>Dashboard {user?.email}</h1>
+      <Can permissions={["metrics.list"]}>
+        <div>Metricas</div>
+      </Can>
     </>
   );
 }
 
-export const getServerSideProps = withSSRauth<{}>(async (ctx) => {
+export const getServerSideProps = withSSRauth(async (ctx) => {
   const apiClient = setupAPIClient(ctx);
-
   const response = await apiClient.get("/me");
 
   console.log(response);
