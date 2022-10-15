@@ -4,17 +4,18 @@ import {
   GetServerSidePropsResult,
 } from "next";
 import { destroyCookie, parseCookies } from "nookies";
-import { AuthTokenError } from "../services/errors/AuthTokenError";
 import decode from "jwt-decode";
 import { validateUserPermissions } from "./validateUserPermissions";
+import { AuthTokenError } from "../services/errors/AuthTokenError";
 
-type withSSRauthOptions = {
+type WithSSRAuthOptions = {
   permissions?: string[];
   roles?: string[];
 };
-export function withSSRauth<P extends { [key: string]: unknown }>(
+
+export function withSSRAuth<P>(
   fn: GetServerSideProps<P>,
-  options?: withSSRauthOptions
+  options?: WithSSRAuthOptions
 ) {
   return async (
     ctx: GetServerSidePropsContext
@@ -32,10 +33,9 @@ export function withSSRauth<P extends { [key: string]: unknown }>(
     }
 
     if (options) {
-      const { permissions, roles } = options;
-
       const user = decode<{ permissions: string[]; roles: string[] }>(token);
 
+      const { permissions, roles } = options;
       const userHasValidPermissions = validateUserPermissions({
         user,
         permissions,

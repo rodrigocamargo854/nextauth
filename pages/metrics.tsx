@@ -1,5 +1,5 @@
 import { setupAPIClient } from "../services/api";
-import { withSSRauth } from "../utils/withSSRauth";
+import { withSSRauth } from "../utils/withSSRAuth";
 
 export default function Metrics() {
   return (
